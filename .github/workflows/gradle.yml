@@ -64,7 +64,7 @@ jobs:
         if: matrix.platform == 'ubuntu-latest'
         run: >-
           mvn install deploy
-          --settings bom/settings/settings.xml
+          --settings settings/settings.xml
           -Dmaven-repo.github.username=${{secrets.MAVEN_REPOSITORY_USERNAME}}
           -Dmaven-repo.github.password=${{secrets.MAVEN_REPOSITORY_PASSWORD}}
 
@@ -72,7 +72,7 @@ jobs:
       - name: Install Maven POMs
         run: >-
           mvn install
-          --settings bom/settings/settings.xml
+          --settings settings/settings.xml
           "-Dmaven-repo.github.username=${{secrets.MAVEN_REPOSITORY_USERNAME}}"
           "-Dmaven-repo.github.password=${{secrets.MAVEN_REPOSITORY_PASSWORD}}"
 
