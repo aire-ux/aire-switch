@@ -1,8 +1,8 @@
-name: Release Aire-Switch
+name: Prepare Arcus Release
 on:
   push:
     tags:
-      - 'release/*'
+        - 'release/*'
 
 jobs:
   build:
@@ -18,14 +18,14 @@ jobs:
     #################   Set up Environment  #################
 
     env:
+      AIRE_SERVLET_TESTS: disabled
       CURRENT_MAJOR_VERSION: 1
       CURRENT_MINOR_VERSION: 0
       ACTIONS_ALLOW_UNSECURE_COMMANDS: true
-      NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
     #################   Overview of Build Process   #################
     #   Note:  this is documented fully at
-    #   https://github.com/sunshower-io/sunshower-arcus/build.md
+    #   https://github.com/sunshower-io/sunshower-aire-ux/build.md
     #
     #   Versions:  most/all component versions should be stored in
     #   bom/imported/pom.xml
@@ -40,8 +40,6 @@ jobs:
     #################   Overview of Build Process   #################
 
     steps:
-      - name: Setup Docker
-        uses: docker-practice/actions-setup-docker@master
       - name: Checkout
         uses: actions/checkout@master
         with:
@@ -49,22 +47,18 @@ jobs:
           fetch-depth: 0
 
       - name: Set up JDK 17
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v2
         with:
+          distribution: zulu
           java-version: 17
 
       - name: Generate Build Number
         id: buildnumber
-        uses: einaregilsson/build-number@v3
+        uses: einaregilsson/build-number@v2
         with:
           token: ${{ secrets.github_token }}
 
 
-      - name: Import GPG Key
-        uses: crazy-max/ghaction-import-gpg@v5.0.0
-        with:
-          gpg_private_key: ${{ secrets.SIGNING_KEY }}
-          passphrase: ${{ secrets.SIGNING_PASSWORD }}
       #################   Set Final Version Number #################
       # generate the environment variable:
       #     final_version
@@ -80,43 +74,26 @@ jobs:
           echo ::set-output name=result::$CURRENT_MAJOR_VERSION.$CURRENT_MINOR_VERSION.$BUILD_NUMBER.Final
 
 
-      - name: Configure Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18.x'
-          registry-url: 'https://registry.npmjs.org'
+      - name: Increment Aire Component BOM project version
+        run: >-
+          mvn versions:set -f bom
+          -DnewVersion=${{ steps.finalVersion.outputs.result }}
+          --settings bom/settings/settings.xml
+          -DnewVersion=${{ steps.finalVersion.outputs.result }}
+          -Dmaven-repo.github.username=${{secrets.MAVEN_REPOSITORY_USERNAME}}
+          -Dmaven-repo.github.password=${{secrets.MAVEN_REPOSITORY_PASSWORD}}
 
-      - name: Configure Git
-        run: |
-          git config --local user.email "build@sunshower.io"
-          git config --local user.name "build"
-          git remote set-url origin https://x-access-token:${{ secrets.PUSH_ENABLED_GITHUB_TOKEN }}@github.com/${{ github.repository }}
-
-      #################   Patch Version Number #################
-      #
-      #  We need to run this before we run anything else
-      #################   Patch Version Number #################
-      - name: Increment NPM Version
-        run: npm version patch
-
-      - name: Install NPM dependencies
-        run: npm install
-
-      - name: Build Lit Component
-        run: npm run build
+      - name: Increment Aire Component Property version
+        run: >-
+          mvn versions:set-property -f bom
+          -Dproperty=aire-ux.version -DnewVersion=${{ steps.finalVersion.outputs.result }}
+          --settings bom/settings/settings.xml
+          -DnewVersion=${{ steps.finalVersion.outputs.result }}
+          -Dmaven-repo.github.username=${{secrets.MAVEN_REPOSITORY_USERNAME}}
+          -Dmaven-repo.github.password=${{secrets.MAVEN_REPOSITORY_PASSWORD}}
 
 
-      - name: Publish NPM Components
-        run: npm publish --access=public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Update NPM Version for build
-        run: npmv=$(node -p "require('./package.json').version") && sed "/^npmVersion/s/=.*$/=$npmv/" gradle.properties -i
-
-
-
-      - name: Increment Aire Build Number
+      - name: Increment Aire-UX Build Number
         uses: eskatos/gradle-command-action@v1
         env:
           JAVA_TOOL_OPTIONS: -Duser.language=en -Duser.country=US
@@ -128,44 +105,28 @@ jobs:
             -PmavenRepositoryPassword=${{secrets.MAVEN_REPOSITORY_PASSWORD}}
             -PmavenRepositoryUrl=${{secrets.MAVEN_REPOSITORY_URL}}
 
+      - name: Deploy Bills-Of-Materials
+        run: >-
+          mvn clean install deploy -f bom
+          --settings bom/settings/settings.xml
+          -Dmaven-repo.github.username=${{secrets.MAVEN_REPOSITORY_USERNAME}}
+          -Dmaven-repo.github.password=${{secrets.MAVEN_REPOSITORY_PASSWORD}} -e
 
 
 
-      - name: Build And Deploy Aire Projects
+
+      - name: Build And Deploy Aire-UX Projects
         uses: eskatos/gradle-command-action@v1
         env:
+          AIRE_SERVLET_TESTS: disabled
           JAVA_TOOL_OPTIONS: -Duser.language=en -Duser.country=US
         with:
           gradle-version: 7.4
           arguments: >-
-            clean assemble build pV sA javadoc -i
+            clean assemble build pTML sA javadoc publish -i
             -PmavenRepositoryUsername=${{secrets.MAVEN_REPOSITORY_USERNAME}}
             -PmavenRepositoryPassword=${{secrets.MAVEN_REPOSITORY_PASSWORD}}
             -PmavenRepositoryUrl=${{secrets.MAVEN_RELEASE_URL}} --stacktrace
-
-
-
-      - name: Deploy To Maven Central
-        uses: eskatos/gradle-command-action@v1
-        env:
-          JAVA_TOOL_OPTIONS: -Duser.language=en -Duser.country=US
-        with:
-          gradle-version: 7.4
-          arguments: >-
-            assemble
-            pV
-            build
-            sA
-            sign
-            publish
-            -i
-            -Psigning.gnupg.keyName=${{ secrets.SIGNING_KEY_ID }}
-            -Psigning.gnupg.passphrase=${{ secrets.SIGNING_PASSWORD }}
-            -PmavenRepositoryUsername=${{secrets.MAVEN_CENTRAL_REPOSITORY_USERNAME}}
-            -PmavenRepositoryPassword=${{secrets.MAVEN_CENTRAL_REPOSITORY_PASSWORD}}
-            -PmavenRepositoryUrl=${{secrets.MAVEN_CENTRAL_REPOSITORY_URL}} --stacktrace
-
-
 
 
 
@@ -186,15 +147,15 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: arcus-${{ env.final_version }}
-          release_name: Aire-release-version-${{ env.final_version }}
+          tag_name: aire-ux-${{ env.final_version }}
+          release_name: Aire-UX-release-version-${{ env.final_version }}
 
           body: |
-            ** Changes in arcus-${{ env.final_version }} **
+            ** Changes in aire-ux-${{ env.final_version }} **
 
             ${{ env.commitmsg }}
 
-            Tag: https://github.com/sunshower-io/sunshower-arcus/releases/tag/v${{ env.final_version }}.Final
+            Tag: https://github.com/aire-ux/aire-components/releases/tag/v${{ env.final_version }}.Final
           draft: false
           prerelease: false
 
@@ -223,8 +184,26 @@ jobs:
         run: |
           echo '::set-output name=result::$CURRENT_MAJOR_VERSION.$CURRENT_MINOR_VERSION.$BUILD_NUMBER-SNAPSHOT'
 
+      - name: Increment Bills-of-Materials to Snapshots
+        run: >-
+          mvn versions:set -f bom
+          --settings bom/settings/settings.xml
+          -DnewVersion=${{ steps.snapshotVersion.outputs.result }}
+          -Dmaven-repo.github.username=${{secrets.MAVEN_REPOSITORY_USERNAME}}
+          -Dmaven-repo.github.password=${{secrets.MAVEN_REPOSITORY_PASSWORD}}
+          &&
+          mvn versions:set-property -f bom
+          --settings bom/settings/settings.xml
+          -Dproperty=aire-ux.version -DnewVersion=${{ steps.snapshotVersion.outputs.result }}
+          -Dmaven-repo.github.username=${{secrets.MAVEN_REPOSITORY_USERNAME}}
+          -Dmaven-repo.github.password=${{secrets.MAVEN_REPOSITORY_PASSWORD}}
+          &&
+          mvn clean install -f bom
+          --settings bom/settings/settings.xml
+          -Dmaven-repo.github.username=${{secrets.MAVEN_REPOSITORY_USERNAME}}
+          -Dmaven-repo.github.password=${{secrets.MAVEN_REPOSITORY_PASSWORD}}
 
-      - name: Increment Arcus Build Number to Snapshot
+      - name: Increment Aire-UX Build Number to Snapshot
         uses: eskatos/gradle-command-action@v1
         env:
           JAVA_TOOL_OPTIONS: -Duser.language=en -Duser.country=US
@@ -235,25 +214,35 @@ jobs:
             -PmavenRepositoryPassword=${{secrets.MAVEN_REPOSITORY_PASSWORD}}
             -PmavenRepositoryUrl=${{secrets.MAVEN_REPOSITORY_URL}}
 
+      - name: Deploy Bills-Of-Materials
+        run: >-
+          mvn install deploy -f bom
+          --settings bom/settings/settings.xml
+          -Dmaven-repo.github.username=${{secrets.MAVEN_REPOSITORY_USERNAME}}
+          -Dmaven-repo.github.password=${{secrets.MAVEN_REPOSITORY_PASSWORD}} -e
 
 
-      - name: Build Aire Projects
+
+      - name: Build Aire-UX Projects
         uses: eskatos/gradle-command-action@v1
         env:
           JAVA_TOOL_OPTIONS: -Duser.language=en -Duser.country=US
         with:
           gradle-version: 7.4
           arguments: >-
-            clean assemble build pV sA javadoc -i
+            clean assemble build pTML sA javadoc publish -i
             -PmavenRepositoryUsername=${{secrets.MAVEN_REPOSITORY_USERNAME}}
             -PmavenRepositoryPassword=${{secrets.MAVEN_REPOSITORY_PASSWORD}}
             -PmavenRepositoryUrl=${{secrets.MAVEN_REPOSITORY_URL}} --stacktrace
 
 
-      - name: Commit Changes
-        run: |
-          git commit -am "Releasing new Snapshot [tag: snapshot]"
 
+      - name: Commit Version Changes and Release
+        run: |
+          git config --local user.email "build@sunshower.io"
+          git config --local user.name "build"
+          git remote set-url origin https://x-access-token:${{ secrets.PUSH_ENABLED_GITHUB_TOKEN }}@github.com/${{ github.repository }}
+          git commit -am "Releasing new Snapshot [tag: snapshot]"
 
       - name: Push changes
         uses: ad-m/github-push-action@master
