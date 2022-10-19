@@ -21,7 +21,7 @@ apply from: "$rootDir/tasks/revisions.gradle"
 
 dependencyManagement {
     imports {
-        mavenBom "io.sunshower.aire.ux.controls-aire-switch:bom-imported:1.0.0-SNAPSHOT"
+        mavenBom "io.sunshower.aire.ux.controls-aire-switch:bom-imported:${version}"
     }
 }
 
