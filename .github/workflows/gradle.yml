@@ -62,7 +62,7 @@ jobs:
 
       - name: Install and Deploy Maven POMs
         run: >-
-          mvn install
+          mvn verify 
           --settings settings/settings.xml
           -Dmaven-repo.github.username=${{secrets.MAVEN_REPOSITORY_USERNAME}}
           -Dmaven-repo.github.password=${{secrets.MAVEN_REPOSITORY_PASSWORD}}
