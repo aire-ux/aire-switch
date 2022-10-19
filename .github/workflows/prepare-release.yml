@@ -115,6 +115,45 @@ jobs:
         run: npmv=$(node -p "require('./package.json').version") && sed "/^npmVersion/s/=.*$/=$npmv/" gradle.properties -i
 
 
+      - name: Increment Aire-Switch BOM project version
+        run: >-
+          mvn versions:set 
+          -DnewVersion=${{ steps.finalVersion.outputs.result }}
+          --settings settings/settings.xml
+          -DnewVersion=${{ steps.finalVersion.outputs.result }}
+          -Dmaven-repo.github.username=${{secrets.MAVEN_REPOSITORY_USERNAME}}
+          -Dmaven-repo.github.password='${{secrets.MAVEN_REPOSITORY_PASSWORD}}'
+
+      - name: Increment Aire Property version
+        run: >-
+          mvn versions:set-property 
+          -Dproperty=aire.version -DnewVersion=${{ steps.finalVersion.outputs.result }}
+          --settings settings/settings.xml
+          -DnewVersion=${{ steps.finalVersion.outputs.result }}
+          -Dmaven-repo.github.username=${{secrets.MAVEN_REPOSITORY_USERNAME}}
+          -Dmaven-repo.github.password='${{secrets.MAVEN_REPOSITORY_PASSWORD}}'
+
+
+      - name: Deploy Bills-Of-Materials
+        run: >-
+          mvn clean install 
+          --settings settings/settings.xml
+          -Dmaven-repo.github.username=${{secrets.MAVEN_REPOSITORY_USERNAME}}
+          -P github
+          -DrepositoryId=github
+          -Durl=${{secrets.MAVEN_REPOSITORY_URL}}
+          -Dmaven-repo.github.password='${{secrets.MAVEN_REPOSITORY_PASSWORD}}' -e
+
+      - name: Deploy Bills-Of-Materials To Maven Central
+        run: >-
+          mvn clean install verify deploy
+          -P maven-central
+          --settings settings/settings.xml
+          -Dmaven-repo.github.username=${{secrets.MAVEN_CENTRAL_REPOSITORY_USERNAME}}
+          -Dmaven-repo.github.password='${{secrets.MAVEN_CENTRAL_REPOSITORY_PASSWORD}}' -e
+          -Dgpg.keyname=${{ secrets.SIGNING_KEY_ID }}
+          -Dgpg.passphrase='${{ secrets.SIGNING_PASSWORD }}'
+          -Dgpg.keyname=admin@sunshower.io
 
       - name: Increment Aire Build Number
         uses: eskatos/gradle-command-action@v1
