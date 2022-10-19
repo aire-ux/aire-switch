@@ -253,8 +253,16 @@ jobs:
         run: |
           echo '::set-output name=result::$CURRENT_MAJOR_VERSION.$CURRENT_MINOR_VERSION.$BUILD_NUMBER-SNAPSHOT'
 
+      - name: Increment Aire-Switch BOM project version to SNAPSHOT
+        run: >-
+          mvn versions:set 
+          -DnewVersion=${{ steps.finalVersion.outputs.result }}
+          --settings settings/settings.xml
+          -DnewVersion=${{ steps.finalVersion.outputs.result }}
+          -Dmaven-repo.github.username=${{secrets.MAVEN_REPOSITORY_USERNAME}}
+          -Dmaven-repo.github.password='${{secrets.MAVEN_REPOSITORY_PASSWORD}}'
 
-      - name: Increment Arcus Build Number to Snapshot
+      - name: Increment Aire-Switch Build Number to Snapshot
         uses: eskatos/gradle-command-action@v1
         env:
           JAVA_TOOL_OPTIONS: -Duser.language=en -Duser.country=US
