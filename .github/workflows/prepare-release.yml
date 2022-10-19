@@ -214,7 +214,7 @@ jobs:
         id: create_release
         uses: actions/create-release@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PUSH_ENABLED_GITHUB_TOKEN }}
         with:
           tag_name: arcus-${{ env.final_version }}
           release_name: Aire-release-version-${{ env.final_version }}
@@ -245,7 +245,7 @@ jobs:
         id: nextbuildnumber
         uses: einaregilsson/build-number@v2
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.PUSH_ENABLED_GITHUB_TOKEN }}
 
       # Accessible via ${{ steps.snapshotVersion.outputs.result }}
       - name: Set Next Snapshot Version Number
