@@ -4,12 +4,12 @@
 
   <groupId>io.sunshower.aire.ux.controls</groupId>
   <artifactId>aire-switch</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>1.0.18.Final</version>
   <packaging>pom</packaging>
   <parent>
     <groupId>io.sunshower.aire.ux.controls</groupId>
     <artifactId>aire-switch-parent</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.18.Final</version>
     <relativePath>../</relativePath>
   </parent>
 
