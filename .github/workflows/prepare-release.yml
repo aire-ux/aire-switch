@@ -245,7 +245,7 @@ jobs:
         id: nextbuildnumber
         uses: einaregilsson/build-number@v2
         with:
-          token: ${{ secrets.github_token }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       # Accessible via ${{ steps.snapshotVersion.outputs.result }}
       - name: Set Next Snapshot Version Number
