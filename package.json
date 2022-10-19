@@ -1,6 +1,6 @@
 {
   "name": "@aire-ux/aire-switch",
-  "version": "1.0.18",
+  "version": "1.0.19",
   "description": "aire-switch",
   "main": "dist/es2019/aire-switch.js",
   "exports": {
