@@ -124,15 +124,6 @@ jobs:
           -Dmaven-repo.github.username=${{secrets.MAVEN_REPOSITORY_USERNAME}}
           -Dmaven-repo.github.password='${{secrets.MAVEN_REPOSITORY_PASSWORD}}'
 
-      - name: Increment Aire Property version
-        run: >-
-          mvn versions:set-property 
-          -Dproperty=aire.version -DnewVersion=${{ steps.finalVersion.outputs.result }}
-          --settings settings/settings.xml
-          -DnewVersion=${{ steps.finalVersion.outputs.result }}
-          -Dmaven-repo.github.username=${{secrets.MAVEN_REPOSITORY_USERNAME}}
-          -Dmaven-repo.github.password='${{secrets.MAVEN_REPOSITORY_PASSWORD}}'
-
 
       - name: Deploy Bills-Of-Materials
         run: >-
