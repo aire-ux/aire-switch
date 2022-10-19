@@ -5,7 +5,7 @@
 
   <groupId>io.sunshower.aire.ux.controls</groupId>
   <artifactId>aire-switch-parent</artifactId>
-  <version>1.0.22.Final</version>
+  <version>1.0.23-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>Sunshower-Aire aire-switch</name>
