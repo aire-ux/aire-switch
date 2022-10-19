@@ -256,7 +256,7 @@ jobs:
       - name: Increment Aire-Switch BOM project version to SNAPSHOT
         run: >-
           mvn versions:set 
-          -DnewVersion=${{ steps.finalVersion.outputs.result }}
+          -DnewVersion=${{ steps.snapshotVersion.outputs.result }}
           --settings settings/settings.xml
           -DnewVersion=${{ steps.finalVersion.outputs.result }}
           -Dmaven-repo.github.username=${{secrets.MAVEN_REPOSITORY_USERNAME}}
