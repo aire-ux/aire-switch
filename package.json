@@ -1,6 +1,6 @@
 {
   "name": "@aire-ux/aire-switch",
-  "version": "1.0.21",
+  "version": "1.0.23-SNAPSHOT",
   "description": "aire-switch",
   "main": "dist/es2019/aire-switch.js",
   "exports": {
@@ -69,6 +69,7 @@
     "workbox-precaching": "6.5.0"
   },
   "dependencies": {
+    "@aire-ux/aire-switch": "1.0.21",
     "@polymer/iron-icon": "3.0.1",
     "@polymer/iron-iconset-svg": "3.0.1",
     "@polymer/iron-list": "3.1.0",
@@ -296,7 +297,7 @@
       "workbox-core": "6.5.0",
       "workbox-precaching": "6.5.0"
     },
-    "hash": "8371e3f98b730c9fb59e42fe88120e8ff04fbe52959253469e5f5c4896f70486"
+    "hash": "cba2126c8d43553ebab37727deed9a803bfd8c10ef6b59e05cbd5654503d7e81"
   },
   "overrides": {
     "@vaadin/bundles": "$@vaadin/bundles",
