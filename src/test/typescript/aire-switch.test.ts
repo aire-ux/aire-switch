@@ -15,11 +15,9 @@ import {
   Switch
 } from "@aire-ux/aire-switch/aire-switch"
 
-import * as css from '@aire-ux/aire-switch.css';
 
 import {html} from "lit";
 
-console.log(css);
 describe('a aire-switch', async () => {
   let element: Switch;
   beforeEach(async () => {
