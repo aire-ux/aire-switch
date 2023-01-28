@@ -6,11 +6,11 @@
   "exports": {
     ".": "dist/es2019/index.js",
     "./aire-switch": "./dist/es2019/aire-switch.js",
-    "./dist/styles/aire-switch.css": "./dist/styles/aire-switch.css"
+    "./aire-switch.css": "./dist/styles/aire-switch.css"
   },
   "scripts": {
-    "link": "npm link . && npm link @aire-ux/aire-wizard",
-    "unlink": "npm unlink @aire-ux/aire-wizard",
+    "link": "npm link . && npm link @aire-ux/aire-switch",
+    "unlink": "npm unlink @aire-ux/aire-switch",
     "preinstall": "npx npm-force-resolutions",
     "test": "npx vitest --config vitest.config.ts run",
     "build": "npx gulp build",
