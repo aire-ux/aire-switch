@@ -4,10 +4,15 @@
   "description": "aire-switch",
   "main": "dist/es2019/aire-switch.js",
   "exports": {
-    ".": "dist/es2019/index.js",
     "./aire-switch": "./dist/es2019/aire-switch.js",
-    "./aire-switch.css": "./dist/styles/aire-switch.css"
+    "./aire-switch.css": {
+      "import": "./dist/styles/aire-switch.css",
+      "require": "./dist/styles/aire-switch.css"
+    }
   },
+  "files": [
+    "dist/**/*"
+  ],
   "scripts": {
     "link": "npm link . && npm link @aire-ux/aire-switch",
     "unlink": "npm unlink @aire-ux/aire-switch",
@@ -68,6 +73,7 @@
     "workbox-precaching": "6.5.0"
   },
   "dependencies": {
+    "@aire-ux/aire-switch": "1.0.21",
     "@polymer/iron-icon": "3.0.1",
     "@polymer/iron-iconset-svg": "3.0.1",
     "@polymer/iron-list": "3.1.0",
@@ -175,6 +181,7 @@
   },
   "vaadin": {
     "dependencies": {
+      "@aire-ux/aire-switch": "1.0.21",
       "@polymer/iron-icon": "3.0.1",
       "@polymer/iron-iconset-svg": "3.0.1",
       "@polymer/iron-list": "3.1.0",
@@ -294,7 +301,7 @@
       "workbox-core": "6.5.0",
       "workbox-precaching": "6.5.0"
     },
-    "hash": "187cc90603c17fc764b6066b40ccad38327209fd5c8695f2e107fdbae2ffc7a8"
+    "hash": "171a6903829ace4b084033d55d8645bc4d989152d12b9f09d3be0e994214cfad"
   },
   "overrides": {
     "@vaadin/bundles": "$@vaadin/bundles",
@@ -399,6 +406,7 @@
     "construct-style-sheets-polyfill": "$construct-style-sheets-polyfill",
     "lit": "$lit",
     "@polymer/polymer": "$@polymer/polymer",
-    "date-fns": "$date-fns"
+    "date-fns": "$date-fns",
+    "@aire-ux/aire-switch": "$@aire-ux/aire-switch"
   }
 }

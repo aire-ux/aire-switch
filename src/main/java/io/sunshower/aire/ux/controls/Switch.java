@@ -9,6 +9,7 @@ import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dependency.JsModule;
+import com.vaadin.flow.component.dependency.NpmPackage;
 import com.vaadin.flow.shared.Registration;
 import java.util.Locale;
 import lombok.val;
@@ -18,7 +19,7 @@ import lombok.val;
 @CssImport(Paths.Switch_STYLES)
 
 /** uncomment this if you have deployed this component into NPMJS */
-// @NpmPackage(value = "@${organzation}/@aire-switch", version = Versions.Switch_VERSION)
+@NpmPackage(value = "@aire-ux/aire-switch", version = Versions.Switch_VERSION)
 public class Switch extends Component {
 
   static final PropertyDescriptor<String, String> MODE_PROPERTY_DESCRIPTOR;
