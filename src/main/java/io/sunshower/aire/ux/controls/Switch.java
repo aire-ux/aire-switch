@@ -17,7 +17,6 @@ import lombok.val;
 @Tag("aire-switch")
 @JsModule(Paths.Switch_SOURCE)
 @CssImport(Paths.Switch_STYLES)
-
 /** uncomment this if you have deployed this component into NPMJS */
 @NpmPackage(value = "@aire-ux/aire-switch", version = Versions.Switch_VERSION)
 public class Switch extends Component {

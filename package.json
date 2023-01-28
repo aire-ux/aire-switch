@@ -5,10 +5,7 @@
   "main": "dist/es2019/aire-switch.js",
   "exports": {
     "./aire-switch": "./dist/es2019/aire-switch.js",
-    "./aire-switch.css": {
-      "import": "./dist/styles/aire-switch.css",
-      "require": "./dist/styles/aire-switch.css"
-    }
+    "./aire-switch.css": "./dist/styles/aire-switch.css"
   },
   "files": [
     "dist/**/*"
@@ -48,7 +45,6 @@
     "@types/gulp": "^4.0.9",
     "@types/gulp-sass": "^5.0.0",
     "@types/gulp-typescript": "^2.13.0",
-    "@types/mocha": "^10.0.0",
     "@vitest/ui": "^0.24.0",
     "async": "3.2.2",
     "concurrently": "^7.4.0",
@@ -301,7 +297,7 @@
       "workbox-core": "6.5.0",
       "workbox-precaching": "6.5.0"
     },
-    "hash": "171a6903829ace4b084033d55d8645bc4d989152d12b9f09d3be0e994214cfad"
+    "hash": "8371e3f98b730c9fb59e42fe88120e8ff04fbe52959253469e5f5c4896f70486"
   },
   "overrides": {
     "@vaadin/bundles": "$@vaadin/bundles",
