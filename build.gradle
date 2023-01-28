@@ -298,10 +298,14 @@ node {
     nodeProjectDir = file("${project.projectDir}")
 }
 
+bootRun {
+    mainClass = 'io.sunshower.aire.ux.controls.SwitchDemoApplication'
+    classpath += sourceSets.development.runtimeClasspath
+}
 
 bootJar {
-    mainClass = 'io.sunshower.aire.ux.controlsSwitchDemoApplication'
-    classpath = sourceSets.development.runtimeClasspath
+    mainClass = 'io.sunshower.aire.ux.controls.SwitchDemoApplication'
+    classpath += sourceSets.development.runtimeClasspath
 }
 
 /**

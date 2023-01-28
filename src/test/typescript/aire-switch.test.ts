@@ -18,7 +18,6 @@ import {
 
 import {html} from "lit";
 
-
 describe('a aire-switch', async () => {
   let element: Switch;
   beforeEach(async () => {
